@@ -103,6 +103,7 @@ function unload {
         $modulesData.$Name.Load = $false
         $numLoadedModules--
 
+        $modulesData.$Name.WasLoaded = $false
         $modulesData | ConvertTo-Json -Depth 5 | Set-Content $loadModules -Encoding UTF8
 
         Write-Host "Module $Name marked as unloaded in JSON." -ForegroundColor Green
