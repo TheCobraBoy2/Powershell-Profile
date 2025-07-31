@@ -5,3 +5,5 @@ function touch {
 
     New-Item -Path $Name -ItemType File -Force | Out-Null
 }
+
+Export-ModuleMember -Function touch
