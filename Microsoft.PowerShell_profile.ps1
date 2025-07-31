@@ -3,12 +3,9 @@ $loadModules = "$currentDir\mods\ToLoad.json"
 $numLoadedModules = 0
 
 if (Test-Path $loadModules) {
-    # Read JSON content and convert to PowerShell object
     $modulesData = Get-Content $loadModules -Raw | ConvertFrom-Json
 
-    # Iterate over each module key in the JSON object
     foreach ($moduleName in $modulesData.PSObject.Properties.Name) {
-        # Only load if "Load" property is true
         if ($modulesData.$moduleName.Load -eq $true) {
             $modulePath = "$currentDir\mods\$moduleName\$moduleName.psm1"
 
@@ -67,11 +64,9 @@ function load {
         
         $numLoadedModules++
 
-        # Update the JSON data object
         $modulesData.$Name.Load = $true
         $modulesData.$Name.WasLoaded = $true
 
-        # Save updated JSON back to file
         $modulesData | ConvertTo-Json -Depth 5 | Set-Content $loadModules -Encoding UTF8
     } catch {
         Write-Warning "Failed to load module ${Name}: $_"
@@ -105,11 +100,9 @@ function unload {
         Remove-Module -Name $Name -Force -ErrorAction Stop
         Write-Host "Module $Name removed from current session" -ForegroundColor Green
 
-        # Update JSON flags
         $modulesData.$Name.Load = $false
         $numLoadedModules--
 
-        # Save updated JSON back to file
         $modulesData | ConvertTo-Json -Depth 5 | Set-Content $loadModules -Encoding UTF8
 
         Write-Host "Module $Name marked as unloaded in JSON." -ForegroundColor Green
@@ -130,7 +123,6 @@ function get-loaded {
 
     $modulesData = Get-Content $loadModules -Raw | ConvertFrom-Json
 
-    # Get all loaded modules (Load = true)
     $loadedModules = @(
     $modulesData.PSObject.Properties |
     Where-Object { $_.Value.Load -eq $true } |
@@ -152,7 +144,6 @@ function get-loaded {
             return
         }
 
-        # Print the loaded modules numbered
         for ($i = 0; $i -lt $loadedModules.Count; $i++) {
             Write-Host "$($i + 1). $($loadedModules[$i])"
         }
